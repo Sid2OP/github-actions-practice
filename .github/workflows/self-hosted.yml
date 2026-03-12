@@ -1,0 +1,28 @@
+name: Self-Hosted Runner Job
+
+on:
+    workflow_dispatch:
+
+jobs:
+    runs-on-my-machine:
+        runs-on: self-hosted
+
+        steps:
+            - name: Print hostname
+              run: echo "Running on $(hostname)"
+
+            - name: Create a file
+              run: |
+                echo "This file was created by github actions at $(date)" > /tmp/actions-proof.txt
+                echo "Job ID: ${{ github.run_id }}" >> /tmp/actions.proof.txt
+                cat /tmp/actions-proof.txt
+
+            - name: Verify File Exists
+              run: |
+                if [ -f /tmp/actions-proof.txt ]; then
+                echo "✅ File exists!"
+                cat /tmp/actions-proof.txt
+                else
+                echo "❌ File not found!"
+                exit 1
+                fi
