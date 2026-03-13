@@ -10,7 +10,7 @@ jobs:
     prints-vars:
         runs-on: ubuntu-latest
         env:
-            ENVIRONMRNT: staging
+            ENVIRONMENT: staging
 
         steps:
             - name: Print all env vars
