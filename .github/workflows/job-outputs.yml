@@ -1,0 +1,27 @@
+name: Job Output 
+
+on:
+    workflow_dispatch
+
+jobs:
+
+    generate:
+        runs-on: ubuntu-latest
+        outputs:
+            build_date: ${{ steps.set-date.outputs.date }}
+        steps:
+            - name: set today's date
+              id: set-date                                   # id required to reference output
+              run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+            - name: Confirm it was set
+              run: 'echo "Date set to: ${{ steps.set-date.outputs.date }}"'
+
+    consume:
+        runs-on: ubuntu-latest
+        needs: generate           # must depend on the producing job
+
+        steps:
+            - name: Use the date from the previous job
+              run: |
+               echo "Build date from 'generate' job: ${{ needs.generate.outputs.build_date }}"         
