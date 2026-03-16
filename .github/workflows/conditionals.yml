@@ -1,0 +1,36 @@
+# .github/workflows/conditionals.yml
+name: Conditionals Demo
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # Job-level conditional: only runs on push events, not PRs
+  push-only-job:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      # Step only runs when branch is main
+      - name: Main branch step
+        if: github.ref == 'refs/heads/main'
+        run: echo "This is a push to main!"
+
+      # Always runs (no condition)
+      - name: Risky step
+        id: risky
+        run: |
+          echo "Attempting something that might fail..."
+          exit 1
+        continue-on-error: true   # pipeline continues even if this step fails
+
+      # Only runs if the previous step failed
+      - name: Handle failure
+        if: steps.risky.outcome == 'failure'
+        run: echo "Risky step failed, but we caught it and continued!"
+
+      # Always runs regardless of earlier failures
+      - name: Cleanup
+        if: always()
+        run: echo "Cleanup always runs."
