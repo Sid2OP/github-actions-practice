@@ -2,8 +2,7 @@
 name: Conditionals Demo
 
 on:
-  push:
-  pull_request:
+  workflow_dispatch
 
 jobs:
   # Job-level conditional: only runs on push events, not PRs
