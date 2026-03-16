@@ -20,7 +20,7 @@ jobs:
               run: pip install pytest
 
             - name: Run tests
-              run: scripts/test_math.py
+              run: python scripts/test_math.py
 
             - name: Upload test results
               if: always()    # upload even if tests fail
