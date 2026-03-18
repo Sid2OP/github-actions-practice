@@ -1,53 +1,51 @@
-name: Resuable Build Workflow
+# .github/workflows/reusable-build.yml
+name: Reusable Build Workflow
 
 on:
-    workflow_call:
-        inputs:
-            app_name:
-                description: Name of the application to build
-                type: string
-                required: true
-            environment: 
-                description: Target Enviroment
-                type: string
-                required: false
-                default: staging
-        secrets:
-            docker_token:
-                required: true
-        outputs:
-            build_version: 
-                description: The generated build version string
-                value: ${{ jobs.build.outputs.version }}
+  workflow_call:
+    inputs:
+      app_name:
+        description: Name of the application to build
+        type: string
+        required: true
+      environment:
+        description: Target environment
+        type: string
+        required: false
+        default: staging
+    secrets:
+      docker_token:
+        required: true
+    outputs:
+      build_version:
+        description: The generated build version string
+        value: ${{ jobs.build.outputs.version }}
 
 jobs:
-    build:
-        runs-on: ubuntu_latest
-        outputs:
-            version: ${{ steps.gen-version.outputs.version }}
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.gen-version.outputs.version }}
 
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-          - name: Print build info
-            run: |
-              echo "Building ${{ inputs.app_name }} for ${{ inputs.environment }}"
+      - name: Print build info
+        run: |
+          echo "Building ${{ inputs.app_name }} for ${{ inputs.environment }}"
 
-          - name: Confirm secret is set
-            run: |
-              if [ -n "${{ secrets.docker_token }}" ]; then
-              echo "Docker token is set: true"
-              else
-              echo "Docker token is set: false"
-              fi
+      - name: Confirm secret is set
+        run: |
+          if [ -n "${{ secrets.docker_token }}" ]; then
+            echo "Docker token is set: true"
+          else
+            echo "Docker token is set: false"
+          fi
 
-          - name: Generate build version
-            id: gen-version
-            run: |
-              SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-              echo "version=v1.0-${SHORT_SHA}" >> $GITHUB_OUTPUT
-              echo "Generated version: v1.0-${SHORT_SHA}"
-
-
-
+      - name: Generate build version
+        id: gen-version
+        run: |
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          echo "version=v1.0-${SHORT_SHA}" >> $GITHUB_OUTPUT
+          echo "Generated version: v1.0-${SHORT_SHA}"
