@@ -1,0 +1,38 @@
+# .github/actions/setup-and-greet/action.yml
+name: Setup and Greet
+description: Greets the user and prints environment info
+
+inputs:
+  name:
+    description: Name to greet
+    required: true
+  language:
+    description: Language for greeting (en, es, hi)
+    required: false
+    default: en
+
+outputs:
+  greeted:
+    description: Whether the greeting was completed
+    value: ${{ steps.greet.outputs.greeted }}
+
+runs:
+  using: composite
+  steps:
+    - name: Print greeting
+      id: greet
+      shell: bash
+      run: |
+        case "${{ inputs.language }}" in
+          es) echo "Hola, ${{ inputs.name }}! 👋" ;;
+          hi) echo "नमस्ते, ${{ inputs.name }}! 👋" ;;
+          *)  echo "Hello, ${{ inputs.name }}! 👋" ;;
+        esac
+        echo "greeted=true" >> $GITHUB_OUTPUT
+
+    - name: Print environment info
+      shell: bash
+      run: |
+        echo "Date: $(date)"
+        echo "Runner OS: ${{ runner.os }}"
+        echo "Runner Arch: ${{ runner.arch }}"  

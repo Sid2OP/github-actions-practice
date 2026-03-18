@@ -1,0 +1,28 @@
+# .github/workflows/use-composite-action.yml
+name: Use Composite Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (required to use local actions)
+        uses: actions/checkout@v4
+
+      - name: Run composite action (English)
+        id: greet-en
+        uses: ./.github/actions/setup-and-greet
+        with:
+          name: "DevOps Engineer"
+          language: en
+
+      - name: Run composite action (Spanish)
+        uses: ./.github/actions/setup-and-greet
+        with:
+          name: "DevOps Engineer"
+          language: es
+
+      - name: Check output
+        run: 'echo "Was greeted: ${{ steps.greet-en.outputs.greeted }}"'
