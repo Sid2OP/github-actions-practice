@@ -1,8 +1,7 @@
 name: PR check
 
 on:
-    pull_request:
-        branches: [main]
+    workflow_dispatch
 
 jobs:
     pr_check:
