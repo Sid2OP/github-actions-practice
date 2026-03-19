@@ -1,0 +1,22 @@
+name: Check Pre-Installed Apps
+
+on:
+    workflow_dispatch
+
+jobs:
+    check-tools:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check Pre-installed software apps
+              run: |
+                echo "====Docker===="
+                docker --version
+
+                echo "====Python===="
+                python3 --version
+
+                echo "===== Node.js ====="
+                node --version
+
+                echo "===== Git ====="
+                git --version

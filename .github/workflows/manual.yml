@@ -1,6 +1,7 @@
 name: Manual Workflow
 
 on:
+
     workflow_dispatch:
         inputs:
             environment:
@@ -15,3 +16,19 @@ jobs:
         steps:
             - name: Print environment
               run: 'echo "Deploying to new ${{ github.event.inputs.environment }}"'
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choose environment"
+        required: true
+        default: "staging"
+
+jobs:
+  manual-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print Environment
+        run: 'echo "Deploying to ${{ github.event.inputs.environment }}"'
+
