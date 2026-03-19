@@ -1,0 +1,24 @@
+# .github/workflows/upload-artifact.yml
+name: Upload Artifact Demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate a test report
+        run: |
+          mkdir -p reports
+          echo "Test Report - $(date)" > reports/test-report.txt
+          echo "Tests passed: 42" >> reports/test-report.txt
+          echo "Tests failed: 0" >> reports/test-report.txt
+          cat reports/test-report.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: reports/
+          retention-days: 7    # artifact is kept for 7 days

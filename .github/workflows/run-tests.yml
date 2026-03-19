@@ -1,0 +1,30 @@
+name: Run Phython test
+
+on:
+    workflow_dispatch
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+    
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up python
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.11'
+
+            - name: Install Dependecies
+              run: pip install pytest
+
+            - name: Run tests
+              run: python scripts/test_math.py
+
+            - name: Upload test results
+              if: always()    # upload even if tests fail
+              uses: actions/upload-artifact@v4
+              with:
+                name: test-results
+                path: scripts/  
