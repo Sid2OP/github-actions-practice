@@ -1,0 +1,13 @@
+name: Bye
+
+on:
+    workflow_dispatch
+
+jobs:
+    bye:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: byee to user
+              run: echo"byeeeeee"
+
