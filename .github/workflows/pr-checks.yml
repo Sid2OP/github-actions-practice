@@ -1,0 +1,57 @@
+# .github/workflows/pr-checks.yml
+name: PR Validation Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  file-size-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0    # full history needed to diff
+
+      - name: Check no file exceeds 1 MB
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD | while read file; do
+            if [ -f "$file" ]; then
+              size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file")
+              if [ "$size" -gt 1048576 ]; then
+                echo "ERROR: $file is $(($size / 1024))KB — exceeds 1 MB limit"
+                exit 1
+              fi
+            fi
+          done
+          echo "All files are within the 1 MB limit."
+
+  branch-name-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate branch naming convention
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          echo "Branch: $BRANCH"
+          if [[ "$BRANCH" =~ ^(feature|fix|docs)/.+ ]]; then
+            echo "Branch name is valid."
+          else
+            echo "ERROR: Branch '$BRANCH' does not follow naming convention."
+            echo "Expected: feature/*, fix/*, or docs/*"
+            exit 1
+          fi
+
+  pr-body-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR description
+        run: |
+          BODY="${{ github.event.pull_request.body }}"
+          if [ -z "$BODY" ]; then
+            echo "WARNING: PR description is empty. Please describe your changes."
+            # continue-on-error is set below so this does not fail the job
+          else
+            echo "PR description found."
+            echo "First 100 chars: ${BODY:0:100}"
+          fi
+        continue-on-error: true    # warns but doesn't block the PR

@@ -1,0 +1,17 @@
+name: PR check
+
+on:
+    workflow_dispatch
+
+jobs:
+    pr_check:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: checkout the code
+              uses: actions/checkout@v4
+
+            - name: Print branch name
+              run: 'echo "PR newwwww check running for branch: ${{ github.head_ref }}"'
+
+
